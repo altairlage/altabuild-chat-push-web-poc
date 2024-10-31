@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head>
+    	<h:outputStylesheet library="css" name="ajustes.css"/>
+        <title>altabuild Chat</title>    
+	</h:head>
+	
+    <h:body>
+        <p:growl id="messages" sticky="false"/>
+        	
+		<div id="content" style="height:100%">
+		<div id="header">
+	    	<div id="cabecalho_esquerdo">
+	      		<img src="../resources/images/logo.png" />
+	      	</div>
+		</div>
+	
+		<div class="div100">
+			          
+			<p:menubar>
+			    	<p:menuitem value="#{message.menu_users}" url="/protected/usersList.xhtml" />
+			    	<p:menuitem value="#{message.menu_channels}" url="/protected/channelList.xhtml" />
+			      		 		
+			    <f:facet name="options">
+			    	<h:form>
+						<p:commandButton action="#{loginBean.sair}" type="push" value="#{message.login_button_logout}" ajax="false" />
+					</h:form>
+				</f:facet>
+			</p:menubar>
+			      		
+		</div>
+		
+		<div class="div100">
+	             
+			<div class="div100">&nbsp;</div>
+		    <div class="div20">&nbsp;</div>
+			<div class="div60">	
+				<h:form id="form">
+				
+					<p:panel style="margin-bottom:10px;">
+						<f:facet name="header">
+						 	<h:outputLabel value="#{message.output_selected_user}: " styleClass="tituloMaior"> </h:outputLabel> <h:outputText styleClass="azul_bold" value="#{mensagensListMB.usuarioSelecionado.pessoa.pesNome}"></h:outputText>
+						 </f:facet>
+						<br/>
+						
+				        <h:panelGrid style="width: 100%" columns="4" cellpadding="10">
+
+			            	<p:outputLabel for="canalSelect" value="#{message.select_channel_itemlabel}: " styleClass="tituloMaior"/>
+
+				            <p:selectOneMenu id="canalSelect" value="#{mensagensListMB.canalSelecionado}" style="width:200px">
+				                <p:ajax listener="#{mensagensListMB.onCanalChange}" update="mensagensTable" />
+				                <f:selectItem itemLabel="#{message.select_channel}" itemValue="" noSelectionOption="true" />
+				                <f:selectItems value="#{mensagensListMB.canais}" var="canal" itemValue="#{canal}" itemLabel="#{canal.chaDescription}"/>
+				            </p:selectOneMenu>
+
+			            	<p:commandButton value="#{message.button_delete_user_history}" actionListener="#{mensagensListMB.deleteUserHistory}" update="form messages" icon="fa fa-trash" title="#{message.tittle_delete_user_history}.">
+       							<p:confirm header="#{message.header_warning}" message="#{message.message_delete_user_history}" icon="ui-icon-alert" />
+   							</p:commandButton>
+
+    						<p:commandButton value="#{message.button_delete_channel_history}" actionListener="#{mensagensListMB.deleteChanelHistory}" update="form messages" icon="fa fa-trash" title="#{message.tittle_delete_user_history}.">
+        						<p:confirm header="#{message.header_warning}" message="#{message.message_delete_channel_history}" icon="ui-icon-alert" />
+    						</p:commandButton>
+    						
+				        </h:panelGrid>
+				 		
+				 		<br/>
+				        <p:separator />
+				 		<br/>
+				 		
+				        <p:dataTable 
+				        	id="mensagensTable" 
+				        	rowKey="#{mensagem.mesId}" 
+				        	value="#{mensagensListMB.mensagensPorCanal}" 
+				        	var="mensagem" 
+				        	emptyMessage="#{message.datatable_message_emptyMessage}" 
+				        	paginator="true" 
+				        	rows="10"
+		                    paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+		                    rowsPerPageTemplate="10,20,30">
+					
+							<f:facet name="header">
+				            	#{message.header_mensagens}
+				            </f:facet>
+				               
+				            <p:column>
+				            	<f:facet name="header">
+				                	<h:outputText value="#{message.datatable_sendeddate}" />
+				                </f:facet>
+				
+				                <h:outputText value="#{mensagem.mesSendDateAsDate}">
+				                	<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+				                </h:outputText>
+				            </p:column>
+				            
+				            <p:column>
+				            	<f:facet name="header">
+				                	<h:outputText value="#{mensagem.datatable_receiveddate}" />
+				                </f:facet>
+				
+				                <h:outputText value="#{mensagem.mesReceivedDateAsDate}">
+				                	<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+				                </h:outputText>
+				            </p:column>
+				            
+				            <!-- 
+				            <p:column>
+				            	<f:facet name="header">
+				                	<h:outputText value="Status" />
+								</f:facet>
+				
+				                <h:outputText value="Recebida" rendered="#{mensagensListMB.renderStatus(mensagem.menStatus)}" />
+				                <h:outputText value="Não recebida" rendered="!#{mensagensListMB.renderStatus(mensagem.menStatus)}" />
+				            </p:column>
+				                -->
+				            <p:column>
+				            	<f:facet name="header">
+				                	<h:outputText value="#{mensagem.datatable_body}" />
+				                </f:facet>
+				
+				                <h:outputText value="#{mensagem.mesBody}" />
+				            </p:column>
+						</p:dataTable>
+				    </p:panel>
+	                
+	           	</h:form>
+	           	
+	           	<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" >
+			        <p:commandButton value="#{mensagem.button_yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="#{mensagem.button_no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+	               
+	            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+			 
+				<p:dialog 
+					widgetVar="statusDialog" 
+					modal="true" 
+					draggable="false"
+					closable="false" 
+					resizable="false" 
+					showHeader="false">
+					
+				    <p:graphicImage name="images/loading.gif" />
+				    
+				</p:dialog>
+		</div>
+		<div class="div100">&nbsp;</div>
+	</div>
+	</div>
+	<div id="footer" class="branco1">
+		<div class="div100">&nbsp;</div>
+		<strong>Copyright © 2014 - 2015 altabuild</strong>
+	</div>	
+    </h:body>
+</html>

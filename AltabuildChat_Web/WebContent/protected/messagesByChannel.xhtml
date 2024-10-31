@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+<h:head>
+    <h:outputStylesheet library="css" name="ajustes.css"/>
+	<title>altabuild Chat</title>
+</h:head>
+<h:body>
+	<p:growl id="messages" sticky="false"/>
+	
+	<div id="content" style="height:100%">
+		<div id="header">
+	    	<div id="cabecalho_esquerdo">
+	      		<img src="../resources/images/logo.png" />
+	      	</div>
+		</div>
+	
+	<div class="div100">
+		             
+		<p:menubar>
+			<p:menuitem value="#{message.menu_users}" url="/protected/usersList.xhtml" />
+			<p:menuitem value="#{message.menu_channels}" url="/protected/channelList.xhtml" />
+			      		 		
+			<f:facet name="options">
+				<h:form>
+						<p:commandButton action="#{loginBean.sair}" type="push" value="#{message.login_button_logout}" ajax="false" />
+					</h:form>
+			</f:facet>
+		</p:menubar>
+		      		
+	</div>
+	
+	
+	<div class="div100">
+	             
+		<div class="div100">&nbsp;</div>
+	    <div class="div20">&nbsp;</div>
+		<div class="div60">	
+	  			
+			<h:form id="formMensagens">
+			
+				<p:panel style="margin-bottom:10px;">
+					<f:facet name="header">
+						 <h:outputLabel value="#{message.output_selected_user}: " styleClass="tituloMaior"> </h:outputLabel> <h:outputText styleClass="azul_bold" value="#{mensagensPorCanalMB.usuarioSelecionado.pessoa.pesNome}"></h:outputText>
+					</f:facet>
+					<br/>
+								
+					<p:dataTable 
+						id="mensagensTable" 
+						rowKey="#{mensagem.mesId}" 
+						value="#{mensagensPorCanalMB.mensagensDoUsuarioPorCanal}" 
+						var="mensagem" 
+						emptyMessage="#{message.datatable_message_emptyMessage}"
+						paginator="true" 
+						rows="10"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+			            rowsPerPageTemplate="10,20,30">
+						
+						<f:facet name="header">  
+			            	#{message.header_mensagens}
+			            </f:facet>
+			               
+			            <p:column>
+			            	<f:facet name="header">
+			                	<h:outputText value="#{message.datatable_sendeddate}" />
+			                </f:facet>
+			
+			                <h:outputText value="#{mensagem.mesSendDateAsDate}">
+			                	<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+			                </h:outputText>
+			            </p:column>
+			            
+			            <p:column>
+			            	<f:facet name="header">
+			                	<h:outputText value="#{message.datatable_receiveddate}" />
+			                </f:facet>
+			
+			                <h:outputText value="#{mensagem.mesReceivedDateAsDate}">
+			                	<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+			                </h:outputText>
+			            </p:column>
+			            
+			            <!-- 
+			            <p:column>
+			            	<f:facet name="header">
+			                	<h:outputText value="Status" />
+							</f:facet>
+			
+			                <h:outputText value="Recebida" rendered="#{mensagensPorCanalMB.renderStatus(mensagem.menStatus)}" />
+			                <h:outputText value="Não recebida" rendered="!#{mensagensPorCanalMB.renderStatus(mensagem.menStatus)}" />
+			            </p:column>
+			                -->
+			            <p:column>
+			            	<f:facet name="header">
+			                	<h:outputText value="#{mensagem.datatable_body}" />
+			                </f:facet>
+			
+			                <h:outputText value="#{mensagem.mesBody}" />
+			            </p:column>
+					</p:dataTable>
+				
+				<br/>
+				<p:commandButton 
+					value="#{mensagem.button_delete_messages}" 
+					actionListener="#{mensagensPorCanalMB.deleteMessages()}" 
+					icon="fa fa-trash" 
+					title="#{mensagem.tittle_delete_this_channel_messages}." 
+					process="@all" 
+					update="messages :formMensagens">
+					
+	        		<p:confirm 
+	        			header="#{mensagem.header_warning}" 
+	        			message="#{mensagem.message_delete_this_channel_messages}" 
+	        			icon="ui-icon-alert" />
+	        			
+	    		</p:commandButton>
+			</p:panel>	    		
+	    		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="#{mensagem.button_yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+					<p:commandButton value="#{mensagem.button_no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+				
+			</h:form>	
+		</div>
+		<div class="div100">&nbsp;</div>
+	</div>
+	</div>
+	<div id="footer" class="branco1">
+		<div class="div100">&nbsp;</div>
+		<strong>Copyright © 2014 - 2015 altabuild</strong>
+	</div>	
+</h:body>
+</html>

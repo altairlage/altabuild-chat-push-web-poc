@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head>
+    	<h:outputStylesheet library="css" name="ajustes.css"/>
+        <title>altabuild Chat</title>    
+	</h:head>
+    <h:body>
+        	
+		<div id="content" style="height:100%">
+		<div id="header">
+	    	<div id="cabecalho_esquerdo">
+	      		<img src="../resources/images/logo.png" />
+	      	</div>
+		</div>
+	
+		<div class="div100">
+			             
+			<p:menubar>
+			    	<p:menuitem value="#{message.menu_users}" url="/protected/usersList.xhtml" />
+			    	<p:menuitem value="#{message.menu_channels}" url="/protected/channelList.xhtml" />
+			      		 		
+			    <f:facet name="options">
+			    	<h:form>
+						<p:commandButton action="#{loginBean.sair}" type="#{message.menu_channels}" value="Sair" ajax="false" />
+					</h:form>
+				</f:facet>
+			</p:menubar>
+			      		
+		</div>
+		
+		<div class="div100">
+	             
+			<div class="div100">&nbsp;</div>
+		    <div class="div20">&nbsp;</div>
+			<div class="div60">	
+				<h:form id="form">
+					<p:dataTable id="canaisTable"
+						rowKey="#{canal.chaId}"
+						value="#{channelMB.canaisList}"
+						var="canal"
+						emptyMessage="#{message.datatable_channel_emptyMessage}"
+						paginator="true"
+						rows="10"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="10,20,30" 
+						selectionMode="single" 
+						selection="#{channelMB.canalSelecionado}">
+		                 			
+							<p:ajax event="rowSelect" 
+								listener="#{channelMB.onRowSelect}" 
+								update="usuarioDetail"
+								oncomplete="PF('usuarioDialog').show()" />
+							
+		                    <f:facet name="header">  
+		                        #{message.header_canais}
+		                    </f:facet>
+		                    
+		                    <p:column>
+		                        <f:facet name="header">
+		                            <h:outputText value="#{message.datatable_channel_description}" />
+		                        </f:facet>
+		
+		                        <h:outputText value="#{canal.chaDescription}" />
+		                    </p:column>
+		                    
+		                </p:dataTable>
+	                
+	           	</h:form>
+	               
+	            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+			 
+				<p:dialog 
+					widgetVar="statusDialog" 
+					modal="true" 
+					draggable="false"
+					closable="false"
+					resizable="false"
+					showHeader="false">
+					
+				    <p:graphicImage name="images/loading.gif" />
+				    
+				</p:dialog>
+				
+				<p:dialog 
+					header="#{message.datatable_channel_channels_users}"
+					widgetVar="usuarioDialog"
+					resizable="false"
+					width="60%"
+					showEffect="fade" 
+					hideEffect="fade" 
+					modal="true">
+					
+					<p:outputPanel 
+						id="usuarioDetail" 
+						style="text-align:center;">
+						
+						<p:dataTable 
+							id="usuariosTable" 
+							rowKey="#{usuario.usuId}" 
+							value="#{channelMB.usuarioList}" 
+							var="usuario" 
+							emptyMessage="#{message.datatable_user_emptyMessage}" 
+							rows="10"
+							paginator="true"
+	                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+	                        rowsPerPageTemplate="10,20,30" 
+	                        selectionMode="single" 
+	                        selection="#{channelMB.usuarioSelecionado}" >
+	                            
+	                    		<p:ajax event="rowSelect" listener="#{channelMB.onRowSelectUsuario}" update="form"/>
+	                           
+	                           <p:column 
+	                           		sortBy="#{usuario.pessoa.pesNome}" 
+	                           		filterBy="#{usuario.pessoa.pesNome}" 
+	                           		filterMatchMode="contains">
+	                           		
+		                        	<f:facet name="header">
+		                            	<h:outputText value="#{message.datatable_name}" />
+		                        	</f:facet>
+		
+		                        	<h:outputText value="#{usuario.pessoa.pesNome}" />
+	                    		</p:column>
+	                    
+			                    <p:column>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{message.datatable_phone}" />
+			                        </f:facet>
+			
+			                        <h:outputText value="#{usuario.pessoa.pesTelefone}" />
+			                    </p:column>
+	                    
+			                    <p:column>
+			                        <f:facet name="header">
+			                            <h:outputText value="#{message.datatable_cellphone}" />
+			                        </f:facet>
+			
+			                        <h:outputText value="#{usuario.pessoa.pesCelular}" />
+			                    </p:column>
+	                    
+			                    <p:column sortBy="#{usuario.pessoa.pesEmail}">
+			                        <f:facet name="header">
+			                            <h:outputText value="#{message.datatable_email}" />
+			                        </f:facet>
+			
+			                        <h:outputText value="#{usuario.pessoa.pesEmail}" />
+			                    </p:column>
+	                    </p:dataTable>
+	        		</p:outputPanel>
+	        	</p:dialog> 
+		</div>
+		<div class="div100">&nbsp;</div>
+	</div>
+	</div>
+	<div id="footer" class="branco1">
+		<div class="div100">&nbsp;</div>
+		<strong>Copyright © 2014 - 2015 altabuild</strong>
+	</div>	
+    </h:body>
+</html>
